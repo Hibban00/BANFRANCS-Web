@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>BANFRANCS</title>
+
+    <!-- BOOTSTRAP -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- ICONOS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- CSS -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <!-- LOGO -->
+        <a class="navbar-brand d-flex align-items-center" href="#">
+          <img
+            src="{{ url_for('static', filename='img/logo_navbar.png') }}"
+            width="60"
+            class="me-2"
+          />
+
+          <span class="text-white"> BANFRANCS </span>
+        </a>
+
+        <!-- BOTON HAMBURGUESA -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#menu"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- CONTENIDO DEL MENU -->
+        <div class="collapse navbar-collapse" id="menu">
+          <!-- OPCIONES -->
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#"> Inicio </a>
+            </li>
+
+            <!-- DROPDOWN PRODUCTOS -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+              >
+                Productos
+              </a>
+
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="#"> Polos Negros </a>
+                </li>
+
+                <li>
+                  <a class="dropdown-item" href="#"> Polos Blancos </a>
+                </li>
+
+                <li>
+                  <a class="dropdown-item" href="#"> Polos Oversize </a>
+                </li>
+
+                <li>
+                  <a class="dropdown-item" href="#"> Nueva Temporada </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- COLECCION NORMAL -->
+            <li class="nav-item">
+              <a class="nav-link" href="#"> Colección </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="#"> Contacto </a>
+            </li>
+          </ul>
+
+          <!-- BUSCADOR -->
+          <form class="d-flex ms-4 mt-3 mt-lg-0">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Buscar"
+            />
+
+            <button class="btn btn-search">Buscar</button>
+          </form>
+
+          <!-- ICONOS -->
+          <div class="iconos d-flex align-items-center ms-4 mt-3 mt-lg-0">
+            <!-- USUARIO -->
+            <i class="fa-solid fa-user"></i>
+
+            <!-- FAVORITOS -->
+            <i class="fa-solid fa-heart"></i>
+
+            <!-- CARRITO -->
+            <div class="carrito">
+              <i class="fa-solid fa-cart-shopping"></i>
+
+              <span class="badge-carrito"> 0 </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- CARRUSEL -->
+    <div class="carousel-container">
+      <div
+        id="slider"
+        class="carousel slide"
+        data-bs-ride="carousel"
+        data-bs-interval="3500"
+      >
+        <div class="carousel-inner">
+          <!-- SLIDE 1 -->
+          <div class="carousel-item active">
+            <div class="row">
+              <div class="col-md-6">
+                <img
+                  src="{{ url_for('static', filename='img/polo_blanco_carrusel.png') }}"
+                  class="d-block w-100"
+                />
+              </div>
+
+              <div class="col-md-6">
+                <div class="texto-carousel">
+                  <h1>Viste con Seguridad</h1>
+
+                  <p>Diseños modernos para hombres con estilo.</p>
+
+                  <button class="btn-premium">Explorar Colección</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 2 -->
+          <div class="carousel-item">
+            <div class="row">
+              <div class="col-md-6">
+                <img
+                  src="{{ url_for('static', filename='img/polo_negro_carrusel.png') }}"
+                  class="d-block w-100"
+                />
+              </div>
+
+              <div class="col-md-6">
+                <div class="texto-carousel">
+                  <h1>Moda Premium</h1>
+
+                  <p>Calidad, comodidad y elegancia.</p>
+
+                  <button class="btn-premium">Comprar Ahora</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLIDE 3 -->
+          <div class="carousel-item">
+            <div class="row">
+              <div class="col-md-6">
+                <img
+                  src="{{ url_for('static', filename='img/polo_azul_carrusel.png') }}"
+                  class="d-block w-100"
+                />
+              </div>
+
+              <div class="col-md-6">
+                <div class="texto-carousel">
+                  <h1>Nueva Temporada</h1>
+
+                  <p>Encuentra polos exclusivos y modernos.</p>
+
+                  <button class="btn-premium">Ver Productos</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTROLES -->
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#slider"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon bg-dark rounded-circle p-3">
+          </span>
+        </button>
+
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#slider"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon bg-dark rounded-circle p-3">
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PRODUCTOS -->
+    <div class="container">
+      <h2 class="titulo">Productos Destacados</h2>
+
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="card shadow">
+            <img
+              src="{{ url_for('static', filename='img/para_venta_negro.png') }}"
+              class="card-img-top"
+            />
+
+            <div class="card-body text-center">
+              <h4>Polo Negro</h4>
+
+              <p class="precio">S/ 49.90</p>
+
+              <button class="btn btn-dark">Comprar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+          <div class="card shadow">
+            <img
+              src="{{ url_for('static', filename='img/para_venta_blanco.png') }}"
+              class="card-img-top"
+            />
+
+            <div class="card-body text-center">
+              <h4>Polo Blanco</h4>
+
+              <p class="precio">S/ 44.90</p>
+
+              <button class="btn btn-dark">Comprar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+          <div class="card shadow">
+            <img
+              src="{{ url_for('static', filename='img/para_venta_azul.png') }}"
+              class="card-img-top"
+            />
+
+            <div class="card-body text-center">
+              <h4>Polo Azul</h4>
+
+              <p class="precio">S/ 54.90</p>
+
+              <button class="btn btn-dark">Comprar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BENEFICIOS -->
+    <section class="beneficios">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="beneficio-box">
+              <i class="fa-solid fa-truck"></i>
+
+              <h4>Envíos Rápidos</h4>
+
+              <p>Entregas seguras a todo el país.</p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="beneficio-box">
+              <i class="fa-solid fa-shirt"></i>
+
+              <h4>Calidad Premium</h4>
+
+              <p>Polos modernos y cómodos.</p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="beneficio-box">
+              <i class="fa-solid fa-lock"></i>
+
+              <h4>Compra Segura</h4>
+
+              <p>Protección en todas tus compras.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container text-center">
+        <h3>BANFRANCS</h3>
+
+        <p>Moda masculina moderna y elegante.</p>
+
+        <div class="redes">
+          <i class="fa-brands fa-facebook"></i>
+
+          <i class="fa-brands fa-instagram"></i>
+
+          <i class="fa-brands fa-whatsapp"></i>
+        </div>
+
+        <p class="mt-3">BANFRANCS © 2026 | Todos los derechos reservados</p>
+      </div>
+    </footer>
+
+    <!-- JS BOOTSTRAP -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
