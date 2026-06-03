@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colecciones | BANFRANCS</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+      <div class="container">
+        <!-- LOGO -->
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <img
+            src="{{ url_for('static', filename='img/logo_navbar.webp') }}"
+            width="60"
+            class="me-2"
+          />
+
+          <span class="text-white"> BANFRANCS </span>
+        </a>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/"> Volver al inicio </a>
+        </li>
+      </div>
+    </nav>
+
+    <!-- TITULO -->
+    <div class="container">
+      <h1 class="titulo">Colecciones BANFRANCS</h1>
+
+      <p class="text-center mb-5">
+        Explora nuestras colecciones cuidadosamente diseñadas para reflejar
+        estilo, comodidad y elegancia.
+      </p>
+
+      <!-- TARJETAS -->
+      <div class="row g-4">
+        <!-- PREMIUM -->
+        <div class="col-md-4">
+          <div class="card shadow h-100-card">
+            <div class="card-body text-center">
+              <img
+                src="{{ url_for('static', filename='img/premium.webp') }}"
+                class="card-img-top"
+              />
+              <h3>Premium</h3>
+
+              <p>Polos de máxima calidad con acabados exclusivos.</p>
+
+              <a href="#" class="btn btn-dark"> Ver Colección </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEMPORADA -->
+        <div class="col-md-4">
+          <div class="card shadow h-100">
+            <div class="card-body text-center">
+              <img
+                src="{{ url_for('static', filename='img/nueva_temporada.webp') }}"
+                class="card-img-top"
+              />
+              <h3>Nueva Temporada</h3>
+
+              <p>Descubre los lanzamientos más recientes.</p>
+
+              <a href="#" class="btn btn-dark"> Ver Colección </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- URBANA -->
+        <div class="col-md-4">
+          <div class="card shadow h-100">
+            <div class="card-body text-center">
+              <img
+                src="{{ url_for('static', filename='img/urbano.webp') }}"
+                class="card-img-top"
+              />
+
+              <h3>Urbana</h3>
+
+              <p>Estilo moderno y minimalista para el día a día.</p>
+
+              <a href="#" class="btn btn-dark"> Ver Colección </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- VERANO -->
+        <div class="col-md-6">
+          <div class="card shadow h-100">
+            <div class="card-body text-center">
+              <img
+                src="{{ url_for('static', filename='img/verano.webp') }}"
+                class="card-img-top"
+              />
+
+              <h3>Verano</h3>
+
+              <p>Diseñada para brindar frescura y comodidad.</p>
+
+              <a href="#" class="btn btn-dark"> Ver Colección </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- MÁS VENDIDOS -->
+        <div class="col-md-6">
+          <div class="card shadow h-100">
+            <div class="card-body text-center">
+              <img
+                src="{{ url_for('static', filename='img/mas_vendidos.webp') }}"
+                class="card-img-top"
+              />
+              <h3>Más Vendidos</h3>
+
+              <p>Los polos favoritos de nuestros clientes.</p>
+
+              <a href="#" class="btn btn-dark"> Ver Colección </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="text-center mt-5">
+      <p>© 2026 BANFRANCS - Todos los derechos reservados.</p>
+      <p>Moda masculina moderna y elegante.</p>
+    </footer>
+  </body>
+</html>
