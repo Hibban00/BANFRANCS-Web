@@ -1,4 +1,7 @@
+import os
 from flask import Flask, render_template, request, session, redirect
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "banfrancs.db")
 import sqlite3
 
 app = Flask(__name__)
@@ -40,7 +43,7 @@ def productos():
         nombre = request.form["nombre"]
         precio = request.form["precio"]
 
-        conexion = sqlite3.connect("banfrancs.db")
+        conexion = sqlite3.connect(DB_PATH)
         cursor = conexion.cursor()
 
         if accion == "guardar":
@@ -118,7 +121,7 @@ def productos():
 
         conexion.close()
 
-    conexion = sqlite3.connect("banfrancs.db")
+    conexion = sqlite3.connect(DB_PATH)
     cursor = conexion.cursor()
 
     cursor.execute("""
@@ -157,7 +160,7 @@ def usuarios():
         usuario = request.form["usuario"]
         password = request.form["password"]
 
-        conexion = sqlite3.connect("banfrancs.db")
+        conexion = sqlite3.connect(DB_PATH)
         cursor = conexion.cursor()
 
         if accion == "guardar":
@@ -248,7 +251,7 @@ def autenticar():
     usuario = request.form["usuario"]
     password = request.form["password"]
 
-    conexion = sqlite3.connect("banfrancs.db")
+    conexion = sqlite3.connect(DB_PATH)
     cursor = conexion.cursor()
 
     cursor.execute(
@@ -283,7 +286,7 @@ def registrar():
     if password != confirmar:
         return redirect("/?registro_error=password")
 
-    conexion = sqlite3.connect("banfrancs.db")
+    conexion = sqlite3.connect(DB_PATH)
     cursor = conexion.cursor()
 
     # Verificar usuario existente
