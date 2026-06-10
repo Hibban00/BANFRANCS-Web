@@ -22,6 +22,8 @@ def productos():
     nombre = ""
     precio = ""
 
+    productos = []
+
     if request.method == "POST":
 
         accion = request.form["accion"]
@@ -107,12 +109,25 @@ def productos():
 
         conexion.close()
 
+    conexion = sqlite3.connect("banfrancs.db")
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+    SELECT codigo, nombre, precio
+    FROM productos
+    """)
+
+    productos = cursor.fetchall()
+
+    conexion.close()
+
     return render_template(
         "productos.html",
         mensaje=mensaje,
         codigo=codigo,
         nombre=nombre,
         precio=precio,
+        productos=productos,
     )
 
 

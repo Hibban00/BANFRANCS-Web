@@ -12,6 +12,9 @@
   <body>
     <div class="container mt-5">
       <h1 class="text-center mb-4">Gestión de Productos BANFRANCS</h1>
+      <p class="text-center text-muted">
+        Total de productos registrados: {{ productos|length }}
+      </p>
 
       <form method="POST">
         <div class="mb-3">
@@ -85,6 +88,31 @@
 
         <div class="alert alert-info">{{ mensaje }}</div>
       </form>
+      <hr />
+
+      <h2 class="mt-4">Lista de Productos</h2>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for producto in productos %}
+
+          <tr>
+            <td>{{ producto[0] }}</td>
+            <td>{{ producto[1] }}</td>
+            <td>S/ {{ producto[2] }}</td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </body>
 </html>
