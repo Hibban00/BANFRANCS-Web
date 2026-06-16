@@ -130,15 +130,12 @@
                 {% if session["rol"] == "admin" %}
 
                 <li>
-                  <a class="dropdown-item" href="/admindedatos?seccion=productos">
-                    Gestionar Productos
-                  </a>
-                </li>
-
-                <li>
-                  <a class="dropdown-item" href="/admindedatos?seccion=usuarios">
-                    Gestionar Usuarios
-                  </a>
+                    <a
+                        class="dropdown-item"
+                        href="/admindedatos"
+                    >
+                        Panel Administrativo
+                    </a>
                 </li>
 
                 {% endif %}
