@@ -158,9 +158,118 @@ def admindedatos():
 
 
         if accion_usuario:
-
+            
             print("CRUD USUARIOS")
 
+            usuario = request.form.get("usuario")
+            password = request.form.get("password")
+
+            print(usuario)
+            print(password)
+
+            if accion_usuario == "guardar":
+
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute(
+                    """
+                    INSERT INTO usuarios
+                    (usuario, password, rol)
+                    VALUES (?, ?, ?)
+                    """,
+                    (usuario, password, "usuario"),
+                )
+
+                conexion.commit()
+
+                mensaje = "Usuario guardado."
+
+                conexion.close()
+
+            elif accion_usuario == "buscar":
+
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute(
+                    """
+                    SELECT password
+                    FROM usuarios
+                    WHERE usuario = ?
+                    """,
+                    (usuario,),
+                )
+
+                resultado = cursor.fetchone()
+
+                if resultado:
+
+                    password = resultado[0]
+
+                    mensaje = "Usuario encontrado."
+
+                else:
+
+                    mensaje = "Usuario no encontrado."
+
+                conexion.close()
+
+            elif accion_usuario == "modificar":
+
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute(
+                    """
+                    UPDATE usuarios
+                    SET password = ?
+                    WHERE usuario = ?
+                    """,
+                    (password, usuario),
+                )
+
+                conexion.commit()
+
+                if cursor.rowcount > 0:
+
+                    mensaje = "Usuario modificado."
+
+                else:
+
+                    mensaje = "Usuario no encontrado."
+
+                conexion.close()
+
+            elif accion_usuario == "eliminar":
+
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute(
+                    """
+                    DELETE FROM usuarios
+                    WHERE usuario = ?
+                    """,
+                    (usuario,),
+                )
+
+                conexion.commit()
+
+                if cursor.rowcount > 0:
+
+                    mensaje = "Usuario eliminado."
+
+                    usuario = ""
+                    password = ""
+
+                else:
+
+                    mensaje = "Usuario no encontrado."
+
+                conexion.close()
+
+            
         print("Producto:", accion_producto)
         print("Usuario:", accion_usuario)
     conexion = sqlite3.connect(DB_PATH)
@@ -183,6 +292,8 @@ def admindedatos():
         nombre=nombre,
         precio=precio,
         productos=productos,
+        usuario=usuario,
+        password=password,
     )
 
 
