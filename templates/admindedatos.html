@@ -1,0 +1,52 @@
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<div class="row vh-100">
+  <!-- MENU LATERAL -->
+  <div class="col-md-3 col-lg-2 bg-dark text-white p-4">
+    <h3 class="mb-4">BANFRANCS</h3>
+
+    <div class="list-group">
+      <a
+        href="/admindedatos?seccion=productos"
+        class="list-group-item list-group-item-action"
+      >
+        Productos
+      </a>
+
+      <a
+        href="/admindedatos?seccion=usuarios"
+        class="list-group-item list-group-item-action"
+      >
+        Usuarios
+      </a>
+    </div>
+  </div>
+
+  <!-- CONTENIDO -->
+  <div class="col-md-9 col-lg-10 p-4">
+    {% if seccion == "productos" %}
+
+    <h2 class="mb-4">Gestión de Productos</h2>
+
+    <div class="alert alert-success">{% include "_crud_productos.html" %}</div>
+
+    {% elif seccion == "usuarios" %}
+
+    <h2 class="mb-4">Gestión de Usuarios</h2>
+
+    <div class="alert alert-warning">{% include "_crud_usuarios.html" %}</div>
+
+    {% else %}
+
+    <h2>Panel Administrativo BANFRANCS</h2>
+
+    <div class="alert alert-primary mt-4">
+      Bienvenido al panel de administración. Seleccione una opción del menú
+      lateral para gestionar la información.
+    </div>
+
+    {% endif %}
+  </div>
+</div>

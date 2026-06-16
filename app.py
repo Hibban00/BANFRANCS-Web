@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request, session, redirect
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "banfrancs.db")
 import sqlite3
@@ -7,20 +8,182 @@ import sqlite3
 app = Flask(__name__)
 app.secret_key = "banfrancs_secret_key"
 
+
 @app.route("/")
 def inicio():
 
     registro_error = request.args.get("registro_error")
 
-    return render_template(
-        "index.html",
-        registro_error=registro_error
-    )
+    return render_template("index.html", registro_error=registro_error)
 
 
 @app.route("/colecciones")
 def colecciones():
     return render_template("colecciones.html")
+
+
+@app.route("/admindedatos", methods=["GET", "POST"])
+def admindedatos():
+
+    if session.get("rol") != "admin":
+        return redirect("/")
+
+    mensaje = ""
+
+    codigo = ""
+    nombre = ""
+    precio = ""
+
+    usuario = ""
+    password = ""
+
+    productos = []
+
+    seccion = request.args.get("seccion")
+
+    if request.method == "POST":
+
+        accion_producto = request.form.get("accion_producto")
+        accion_usuario = request.form.get("accion_usuario")
+
+        if accion_producto:
+            print("CRUD PRODUCTOS")
+            codigo = request.form.get("codigo")
+            nombre = request.form.get("nombre")
+            precio = request.form.get("precio")
+
+            print(codigo)
+            print(nombre)
+            print(precio)
+
+            if accion_producto == "guardar":
+
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute(
+                    """
+                    INSERT INTO productos
+                    (codigo, nombre, precio)
+                    VALUES (?, ?, ?)
+                    """,
+                    (codigo, nombre, precio),
+                )
+
+                conexion.commit()
+
+                mensaje = "Producto guardado."
+
+                conexion.close()
+
+            elif accion_producto == "buscar":
+
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute(
+                    """
+                    SELECT nombre, precio
+                    FROM productos
+                    WHERE codigo = ?
+                    """,
+                    (codigo,),
+                )
+
+                resultado = cursor.fetchone()
+
+                if resultado:
+
+                    nombre = resultado[0]
+                    precio = resultado[1]
+
+                    mensaje = "Producto encontrado."
+
+                else:
+
+                    mensaje = "Producto no encontrado."
+
+                conexion.close()
+            elif accion_producto == "modificar":
+
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute(
+                    """
+                    UPDATE productos
+                    SET nombre = ?, precio = ?
+                    WHERE codigo = ?
+                    """,
+                    (nombre, precio, codigo),
+                )
+
+                conexion.commit()
+
+                if cursor.rowcount > 0:
+                    mensaje = "Producto modificado."
+                else:
+                    mensaje = "Producto no encontrado."
+
+                conexion.close()
+                
+            elif accion_producto == "eliminar":
+
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute(
+                    """
+                    DELETE FROM productos
+                    WHERE codigo = ?
+                    """,
+                    (codigo,),
+                )
+
+                conexion.commit()
+
+                if cursor.rowcount > 0:
+
+                    mensaje = "Producto eliminado."
+
+                    codigo = ""
+                    nombre = ""
+                    precio = ""
+
+                else:
+
+                    mensaje = "Producto no encontrado."
+
+                conexion.close()
+
+
+        if accion_usuario:
+
+            print("CRUD USUARIOS")
+
+        print("Producto:", accion_producto)
+        print("Usuario:", accion_usuario)
+    conexion = sqlite3.connect(DB_PATH)
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+    SELECT codigo, nombre, precio
+    FROM productos
+    """)
+
+    productos = cursor.fetchall()
+
+    conexion.close()
+
+    return render_template(
+        "admindedatos.html",
+        seccion=seccion,
+        mensaje=mensaje,
+        codigo=codigo,
+        nombre=nombre,
+        precio=precio,
+        productos=productos,
+    )
 
 
 @app.route("/productos", methods=["GET", "POST"])
@@ -149,7 +312,6 @@ def usuarios():
     if session.get("rol") != "admin":
         return redirect("/")
 
-
     mensaje = ""
     usuario = ""
     password = ""
@@ -242,10 +404,10 @@ def usuarios():
         "usuarios.html", mensaje=mensaje, usuario=usuario, password=password
     )
 
+
 @app.route("/autenticar", methods=["POST"])
 def autenticar():
 
-    
     print(request.form)
 
     usuario = request.form["usuario"]
@@ -274,6 +436,7 @@ def autenticar():
         session["rol"] = resultado[1]
 
     return redirect("/")
+
 
 @app.route("/registrar", methods=["POST"])
 def registrar():
@@ -304,10 +467,7 @@ def registrar():
     if existe:
 
         conexion.close()
-        return render_template(
-            "index.html",
-            registro_error="usuario_existe"
-        )
+        return render_template("index.html", registro_error="usuario_existe")
 
     # Registrar usuario
     cursor.execute(
@@ -324,16 +484,19 @@ def registrar():
 
     return redirect("/")
 
+
 @app.route("/logout")
 def logout():
 
     session.clear()
 
-    return redirect("/")    
+    return redirect("/")
+
 
 @app.route("/admin")
 def admin():
     return render_template("admin.html")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)

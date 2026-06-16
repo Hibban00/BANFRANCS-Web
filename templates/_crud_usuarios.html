@@ -1,0 +1,59 @@
+<form method="POST">
+        <div class="mb-3">
+          <label>Usuario</label>
+          <input
+            type="text"
+            name="usuario"
+            class="form-control"
+            placeholder="Ingrese usuario"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label>Contraseña</label>
+          <input
+            type="text"
+            name="password"
+            class="form-control"
+            value="{{ password }}"
+          />
+        </div>
+
+        <button
+          type="submit"
+          name="accion_usuario"
+          value="guardar"
+          class="btn btn-success"
+        >
+          Guardar
+        </button>
+
+        <button
+          type="submit"
+          name="accion_usuario"
+          value="buscar"
+          class="btn btn-primary"
+        >
+          Buscar
+        </button>
+
+        <button
+          type="submit"
+          name="accion_usuario"
+          value="modificar"
+          class="btn btn-warning"
+        >
+          Modificar
+        </button>
+
+        <button
+          type="submit"
+          name="accion_usuario"
+          value="eliminar"
+          class="btn btn-danger"
+        >
+          Eliminar
+        </button>
+
+        <div class="alert alert-info mt-3">{{ mensaje }}</div>
+      </form>
