@@ -1,0 +1,240 @@
+<h2 class="mb-4">
+  <i class="fas fa-chart-line"></i>
+  Dashboard General
+</h2>
+
+<div class="row">
+  <div class="col-md-3 mb-3">
+    <div class="card text-center shadow">
+      <div class="card-body">
+        <h1>📦</h1>
+        <h5>Total Productos</h5>
+        <h3>{{ total_productos }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 mb-3">
+    <div class="card text-center shadow">
+      <div class="card-body">
+        <h1>👥</h1>
+        <h5>Total Usuarios</h5>
+        <h3>{{ total_usuarios }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 mb-3">
+    <div class="card text-center shadow">
+      <div class="card-body">
+        <h1>👑</h1>
+        <h5>Administradores</h5>
+        <h3>{{ total_admins }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 mb-3">
+    <div class="card text-center shadow">
+      <div class="card-body">
+        <h1>🙋</h1>
+        <h5>Usuarios Normales</h5>
+        <h3>{{ total_normales }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-4 mb-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h5 class="text-center mb-3">Usuarios por Rol</h5>
+
+        <div style="max-width: 250px; margin: auto">
+          <canvas id="graficoRoles"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h5 class="text-center mb-3">Productos más Caros</h5>
+
+        <canvas id="graficoProductos"></canvas>
+
+        <ul class="mt-3">
+          {% for producto in productos_top %}
+
+          <li>{{ producto[0] }} - S/ {{ producto[1] }}</li>
+
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 mb-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h5 class="text-center mb-3">Distribución de Precios</h5>
+
+        <canvas id="graficoRangos"></canvas>
+
+        <ul class="mt-3">
+          <li>S/ 0 - 50 : {{ rango1 }}</li>
+
+          <li>S/ 51 - 100 : {{ rango2 }}</li>
+
+          <li>S/ 101+ : {{ rango3 }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+  const ctx =
+  document.getElementById('graficoRoles');
+
+  new Chart(ctx, {
+
+      type: 'pie',
+
+      data: {
+
+          labels: [
+              'Administradores',
+              'Usuarios Normales'
+          ],
+
+          datasets: [{
+
+              data: [
+                  {{ total_admins }},
+                  {{ total_normales }}
+              ]
+
+          }]
+
+      }
+
+  });
+</script>
+
+<script>
+
+  const ctxProductos =
+  document.getElementById('graficoProductos');
+
+  new Chart(ctxProductos, {
+
+      type: 'bar',
+
+      data: {
+
+          labels: [
+
+              {% for producto in productos_top %}
+                  "{{ producto[0] }}",
+              {% endfor %}
+
+          ],
+
+          datasets: [{
+
+              label: 'Precio',
+
+              data: [
+
+                  {% for producto in productos_top %}
+                      {{ producto[1] }},
+                  {% endfor %}
+
+              ]
+
+          }]
+
+      },
+
+      options: {
+
+          animation: {
+
+              duration: 2500
+
+          },
+
+          animations: {
+
+              y: {
+
+                  from: 0
+
+              }
+
+          }
+
+      }
+
+  });
+</script>
+
+<script>
+
+  const ctxRangos =
+  document.getElementById('graficoRangos');
+
+  new Chart(ctxRangos, {
+
+      type: 'bar',
+
+      data: {
+
+          labels: [
+              '0-50',
+              '51-100',
+              '101+'
+          ],
+
+          datasets: [{
+
+              label: 'Productos',
+
+              data: [
+                  {{ rango1 }},
+                  {{ rango2 }},
+                  {{ rango3 }}
+              ]
+
+          }]
+
+      },
+
+      options: {
+
+          animation: {
+
+              duration: 2500
+
+          },
+
+          animations: {
+
+              y: {
+
+                  from: 0
+
+              }
+
+          }
+
+      }
+
+  });
+</script>

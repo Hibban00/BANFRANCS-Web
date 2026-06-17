@@ -46,6 +46,12 @@ def admindedatos():
     total_admins = 0
     total_normales = 0
 
+    productos_top = []
+
+    rango1 = 0
+    rango2 = 0
+    rango3 = 0
+
     seccion = request.args.get("seccion")
 
     if request.method == "POST":
@@ -401,6 +407,90 @@ def admindedatos():
 
         print("Producto:", accion_producto)
         print("Usuario:", accion_usuario)
+
+    if seccion == "dashboard":
+
+        conexion = sqlite3.connect(DB_PATH)
+        cursor = conexion.cursor()
+
+        # Productos
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM productos
+        """)
+
+        total_productos = cursor.fetchone()[0]
+
+        # Usuarios
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM usuarios
+        """)
+
+        total_usuarios = cursor.fetchone()[0]
+
+        # Administradores
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM usuarios
+            WHERE rol = 'admin'
+        """)
+
+        total_admins = cursor.fetchone()[0]
+
+        # Usuarios normales
+        total_normales = total_usuarios - total_admins
+
+        # Top 5 productos más caros
+        cursor.execute("""
+            SELECT nombre, precio
+            FROM productos
+            ORDER BY precio DESC
+            LIMIT 5
+        """)
+
+        productos_top = cursor.fetchall()
+
+        # Rangos de precio
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM productos
+            WHERE precio <= 50
+        """)
+
+        rango1 = cursor.fetchone()[0]
+
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM productos
+            WHERE precio > 50
+            AND precio <= 100
+        """)
+
+        rango2 = cursor.fetchone()[0]
+
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM productos
+            WHERE precio > 100
+        """)
+
+        rango3 = cursor.fetchone()[0]
+
+        conexion.close()
+
+    conexion = sqlite3.connect(DB_PATH)
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+    SELECT codigo, nombre, precio
+    FROM productos
+    """)
+
+    productos = cursor.fetchall()
+
+    conexion.close()
+
     conexion = sqlite3.connect(DB_PATH)
     cursor = conexion.cursor()
 
@@ -429,6 +519,11 @@ def admindedatos():
         total_admins=total_admins,
         total_normales=total_normales,
         rol=rol,
+        productos_top=productos_top,
+
+        rango1=rango1,
+        rango2=rango2,
+        rango3=rango3,
     )
 
 
@@ -503,7 +598,7 @@ def registrar():
         (usuario, password, rol)
         VALUES (?, ?, ?)
         """,
-        (usuario, password, rol),
+        (usuario, password, "usuario"),
     )
 
     conexion.commit()

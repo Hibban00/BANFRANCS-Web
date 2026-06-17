@@ -25,6 +25,13 @@
       >
         Usuarios
       </a>
+
+      <a
+        href="/admindedatos?seccion=dashboard"
+        class="list-group-item list-group-item-action"
+      >
+        Dashboard
+      </a>
     </div>
   </div>
 
@@ -45,6 +52,10 @@
     <div class="card shadow-sm">
       <div class="card-body">{% include "_crud_usuarios.html" %}</div>
     </div>
+
+    {% elif seccion == "dashboard" %}
+
+    {% include "_dashboard.html" %}
 
     {% else %}
 
