@@ -1,60 +1,150 @@
-<form method="POST">
-  <div class="mb-3">
-    <label>Código</label>
-    <input
-      type="text"
-      name="codigo"
-      class="form-control"
-      value="{{ codigo }}"
-    />
+<div class="row">
+  <!-- FORMULARIO -->
+  <div class="col-md-8">
+    <form method="POST">
+      <!-- Código -->
+      <div class="mb-3">
+        <label>Código</label>
+        <input
+          type="text"
+          name="codigo"
+          class="form-control"
+          value="{{ codigo }}"
+        />
+      </div>
+
+      <!-- Nombre -->
+      <div class="mb-3">
+        <label>Nombre</label>
+        <input
+          type="text"
+          name="nombre"
+          class="form-control"
+          value="{{ nombre }}"
+        />
+      </div>
+
+      <!-- Precio -->
+      <div class="mb-3">
+        <label>Precio</label>
+        <input
+          type="number"
+          step="0.01"
+          name="precio"
+          class="form-control"
+          value="{{ precio }}"
+        />
+      </div>
+
+      <!-- Botones -->
+      <div class="mb-3">
+        <button
+          type="submit"
+          name="accion_producto"
+          value="guardar"
+          class="btn btn-success"
+        >
+          Guardar
+        </button>
+
+        <button
+          type="submit"
+          name="accion_producto"
+          value="buscar"
+          class="btn btn-primary"
+        >
+          Buscar
+        </button>
+
+        <button
+          type="submit"
+          name="accion_producto"
+          value="modificar"
+          class="btn btn-warning"
+        >
+          Modificar
+        </button>
+
+        <button
+          type="submit"
+          name="accion_producto"
+          value="eliminar"
+          class="btn btn-danger"
+        >
+          Eliminar
+        </button>
+
+        <button
+          type="submit"
+          name="accion_producto"
+          value="dashboard"
+          class="btn btn-info"
+        >
+          <i class="fas fa-chart-bar"></i>
+          Resumen
+        </button>
+      </div>
+    </form>
   </div>
 
-  <div class="mb-3">
-    <label>Nombre</label>
-    <input
-      type="text"
-      name="nombre"
-      class="form-control"
-      value="{{ nombre }}"
-    />
+  <!-- PANEL DINÁMICO -->
+  <div class="col-md-4 ps-4">
+    <div class="card border-0 shadow-lg h-100">
+      <div
+        class="card-body text-center d-flex flex-column justify-content-center"
+      >
+        {% if mensaje == "dashboard" %}
+        <i class="fas fa-box text-primary fa-5x"></i>
+
+        {% elif "guardado" in mensaje %}
+        <i class="fas fa-check-circle text-success fa-5x"></i>
+
+        {% elif "modificado" in mensaje %}
+        <i class="fas fa-edit text-primary fa-5x"></i>
+
+        {% elif "eliminado" in mensaje %}
+        <i class="fas fa-trash-alt text-danger fa-5x"></i>
+
+        {% elif "encontrado" in mensaje %}
+        <i class="fas fa-search text-info fa-5x"></i>
+
+        {% elif mensaje %}
+        <i class="fas fa-exclamation-triangle text-warning fa-5x"></i>
+
+        {% else %}
+        <i class="fas fa-tachometer-alt text-secondary fa-5x"></i>
+        {% endif %}
+        <!-- CONTENIDO -->
+        {% if mensaje == "dashboard" %}
+
+        <h4 class="mt-3 fw-bold">Resumen de Productos</h4>
+
+        <hr />
+
+        <p>
+          Total Productos:
+          <strong>{{ total_productos }}</strong>
+        </p>
+
+        <p>
+          Precio Promedio:
+          <strong>S/ {{ precio_promedio }}</strong>
+        </p>
+
+        {% else %}
+
+        <h4 class="mt-3 fw-bold">
+          {% if mensaje %} {{ mensaje }} {% else %} Bienvenido al Panel
+          Administrativo {% endif %}
+        </h4>
+
+        {% endif %} {% if not mensaje %}
+        <p class="text-muted">Seleccione una acción para comenzar.</p>
+        {% endif %}
+      </div>
+    </div>
   </div>
-
-  <div class="mb-3">
-    <label>Precio</label>
-    <input
-      type="number"
-      step="0.01"
-      name="precio"
-      class="form-control"
-      value="{{ precio }}"
-    />
-  </div>
-
-  <div class="mb-3">
-    <button type="submit" name="accion_producto" value="guardar" class="btn btn-success">
-      Guardar
-    </button>
-
-    <button type="submit" name="accion_producto" value="buscar" class="btn btn-primary">
-      Buscar
-    </button>
-
-    <button
-      type="submit"
-      name="accion_producto"
-      value="modificar"
-      class="btn btn-warning"
-    >
-      Modificar
-    </button>
-
-    <button type="submit" name="accion_producto" value="eliminar" class="btn btn-danger">
-      Eliminar
-    </button>
-  </div>
-
-  <div class="alert alert-info">{{ mensaje }}</div>
-</form>
+</div>
 
 <table class="table table-striped">
   <thead>

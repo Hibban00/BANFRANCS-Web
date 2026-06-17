@@ -36,8 +36,15 @@ def admindedatos():
 
     usuario = ""
     password = ""
+    rol = "usuario"
 
     productos = []
+
+    total_productos = 0
+    precio_promedio = 0
+    total_usuarios = 0
+    total_admins = 0
+    total_normales = 0
 
     seccion = request.args.get("seccion")
 
@@ -57,24 +64,66 @@ def admindedatos():
             print(precio)
 
             if accion_producto == "guardar":
+                precio_valido = True
 
-                conexion = sqlite3.connect(DB_PATH)
-                cursor = conexion.cursor()
+                try:
+                    precio_num = float(precio)
 
-                cursor.execute(
-                    """
-                    INSERT INTO productos
-                    (codigo, nombre, precio)
-                    VALUES (?, ?, ?)
-                    """,
-                    (codigo, nombre, precio),
-                )
+                    if precio_num <= 0:
+                        mensaje = "El precio debe ser mayor a cero."
+                        precio_valido = False
 
-                conexion.commit()
+                except ValueError:
+                    mensaje = "Ingrese un precio válido."
+                    precio_valido = False
 
-                mensaje = "Producto guardado."
+                if not codigo.strip():
+                    mensaje = "El código es obligatorio."
 
-                conexion.close()
+                elif not nombre.strip():
+                    mensaje = "El nombre es obligatorio."
+
+                elif not precio.strip():
+                    mensaje = "El precio es obligatorio."
+
+                elif not precio_valido:
+                    pass
+
+                else:
+                    conexion = sqlite3.connect(DB_PATH)
+                    cursor = conexion.cursor()
+
+                    cursor.execute(
+                        """
+                        SELECT codigo
+                        FROM productos
+                        WHERE codigo = ?
+                        """,
+                        (codigo,),
+                    )
+
+                    existe = cursor.fetchone()
+
+                    if existe:
+
+                        mensaje = "El código ya existe."
+
+                    else:
+
+                        cursor.execute(
+                            """
+                            INSERT INTO productos
+                            (codigo, nombre, precio)
+                            VALUES (?, ?, ?)
+                            """,
+                            (codigo, nombre, precio),
+                        )
+
+                        conexion.commit()
+
+                        mensaje = "Producto guardado."
+
+                    conexion.close()
 
             elif accion_producto == "buscar":
 
@@ -126,7 +175,7 @@ def admindedatos():
                     mensaje = "Producto no encontrado."
 
                 conexion.close()
-                
+
             elif accion_producto == "eliminar":
 
                 conexion = sqlite3.connect(DB_PATH)
@@ -156,36 +205,90 @@ def admindedatos():
 
                 conexion.close()
 
+            elif accion_producto == "dashboard":
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute("""
+                    SELECT COUNT(*)
+                    FROM productos
+                """)
+
+                total_productos = cursor.fetchone()[0]
+
+                cursor.execute("""
+                    SELECT AVG(precio)
+                    FROM productos
+                """)
+
+                promedio = cursor.fetchone()[0]
+
+                if promedio:
+                    precio_promedio = round(promedio, 2)
+                else:
+                    precio_promedio = 0
+
+                mensaje = "dashboard"
+
+                conexion.close()
 
         if accion_usuario:
-            
+
             print("CRUD USUARIOS")
 
             usuario = request.form.get("usuario")
             password = request.form.get("password")
+            rol = request.form.get("rol")
 
             print(usuario)
             print(password)
 
             if accion_usuario == "guardar":
+                if not usuario.strip():
+                    mensaje = "El usuario es obligatorio."
 
-                conexion = sqlite3.connect(DB_PATH)
-                cursor = conexion.cursor()
+                elif not password.strip():
+                    mensaje = "La contraseña es obligatoria."
 
-                cursor.execute(
-                    """
-                    INSERT INTO usuarios
-                    (usuario, password, rol)
-                    VALUES (?, ?, ?)
-                    """,
-                    (usuario, password, "usuario"),
-                )
+                elif len(password) < 4:
+                    mensaje = "La contraseña debe tener al menos 4 caracteres."
 
-                conexion.commit()
+                else:
 
-                mensaje = "Usuario guardado."
+                    conexion = sqlite3.connect(DB_PATH)
+                    cursor = conexion.cursor()
 
-                conexion.close()
+                    cursor.execute(
+                        """
+                        SELECT usuario
+                        FROM usuarios
+                        WHERE usuario = ?
+                        """,
+                        (usuario,),
+                    )
+
+                    existe = cursor.fetchone()
+
+                    if existe:
+
+                        mensaje = "El usuario ya existe."
+
+                    else:
+
+                        cursor.execute(
+                            """
+                            INSERT INTO usuarios
+                            (usuario, password, rol)
+                            VALUES (?, ?, ?)
+                            """,
+                            (usuario, password, rol),
+                        )
+
+                        conexion.commit()
+
+                        mensaje = "Usuario guardado."
+
+                    conexion.close()
 
             elif accion_usuario == "buscar":
 
@@ -194,7 +297,7 @@ def admindedatos():
 
                 cursor.execute(
                     """
-                    SELECT password
+                    SELECT password, rol
                     FROM usuarios
                     WHERE usuario = ?
                     """,
@@ -206,6 +309,7 @@ def admindedatos():
                 if resultado:
 
                     password = resultado[0]
+                    rol = resultado[1]
 
                     mensaje = "Usuario encontrado."
 
@@ -223,10 +327,10 @@ def admindedatos():
                 cursor.execute(
                     """
                     UPDATE usuarios
-                    SET password = ?
+                    SET password = ?, rol = ?
                     WHERE usuario = ?
                     """,
-                    (password, usuario),
+                    (password, rol, usuario),
                 )
 
                 conexion.commit()
@@ -269,7 +373,32 @@ def admindedatos():
 
                 conexion.close()
 
-            
+            elif accion_usuario == "resumen":
+
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute("""
+                    SELECT COUNT(*)
+                    FROM usuarios
+                """)
+
+                total_usuarios = cursor.fetchone()[0]
+
+                cursor.execute("""
+                    SELECT COUNT(*)
+                    FROM usuarios
+                    WHERE rol = 'admin'
+                """)
+
+                total_admins = cursor.fetchone()[0]
+
+                total_normales = total_usuarios - total_admins
+
+                mensaje = "resumen_usuarios"
+
+                conexion.close()
+
         print("Producto:", accion_producto)
         print("Usuario:", accion_usuario)
     conexion = sqlite3.connect(DB_PATH)
@@ -294,7 +423,14 @@ def admindedatos():
         productos=productos,
         usuario=usuario,
         password=password,
+        total_productos=total_productos,
+        precio_promedio=precio_promedio,
+        total_usuarios=total_usuarios,
+        total_admins=total_admins,
+        total_normales=total_normales,
+        rol=rol,
     )
+
 
 @app.route("/autenticar", methods=["POST"])
 def autenticar():
@@ -367,7 +503,7 @@ def registrar():
         (usuario, password, rol)
         VALUES (?, ?, ?)
         """,
-        (usuario, password, "usuario"),
+        (usuario, password, rol),
     )
 
     conexion.commit()

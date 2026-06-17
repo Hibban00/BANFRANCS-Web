@@ -1,4 +1,9 @@
-<form method="POST">
+<div class="row">
+
+  <!-- FORMULARIO -->
+  <div class="col-md-8">
+
+    <form method="POST">
   <div class="mb-3">
     <label>Usuario</label>
     <input
@@ -18,6 +23,33 @@
       class="form-control"
       value="{{ password }}"
     />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">
+      Rol
+    </label>
+
+    <select
+        name="rol"
+        class="form-select"
+    >
+
+        <option
+            value="usuario"
+            {% if rol == "usuario" %}selected{% endif %}
+        >
+            Usuario
+        </option>
+
+        <option
+            value="admin"
+            {% if rol == "admin" %}selected{% endif %}
+        >
+            Administrador
+        </option>
+
+    </select>
   </div>
 
   <button
@@ -55,6 +87,82 @@
   >
     Eliminar
   </button>
+  <button
+    type="submit"
+    name="accion_usuario"
+    value="resumen"
+    class="btn btn-info"
+  >
+    <i class="fas fa-chart-bar"></i>
+    Resumen
+  </button>
+     </form>
 
-  <div class="alert alert-info mt-3">{{ mensaje }}</div>
-</form>
+  </div>
+
+
+  <!-- PANEL DINÁMICO -->
+  <div class="col-md-4 ps-4">
+    <div class="card border-0 shadow-lg h-100">
+      <div
+        class="card-body text-center d-flex flex-column justify-content-center"
+      >
+        {% if mensaje == "resumen_usuarios" %}
+
+        {% elif "guardado" in mensaje %}
+            <i class="fas fa-check-circle text-success fa-5x"></i>
+
+        {% elif "modificado" in mensaje %}
+            <i class="fas fa-edit text-primary fa-5x"></i>
+
+        {% elif "eliminado" in mensaje %}
+            <i class="fas fa-trash-alt text-danger fa-5x"></i>
+
+        {% elif "encontrado" in mensaje %}
+            <i class="fas fa-search text-info fa-5x"></i>
+
+        {% elif mensaje %}
+            <i class="fas fa-exclamation-triangle text-warning fa-5x"></i>
+
+        {% else %}
+            <i class="fas fa-users-cog text-secondary fa-5x"></i>
+        {% endif %}
+        <!-- CONTENIDO -->
+        {% if mensaje == "resumen_usuarios" %}
+
+            <h4 class="fw-bold">
+                <i class="fas fa-users text-primary"></i>
+                Resumen de Usuarios
+            </h4>
+
+            <hr>
+
+            <p>
+                Total Usuarios:
+                <strong>{{ total_usuarios }}</strong>
+            </p>
+
+            <p>
+                Administradores:
+                <strong>{{ total_admins }}</strong>
+            </p>
+
+            <p>
+                Usuarios:
+                <strong>{{ total_normales }}</strong>
+            </p>
+
+        {% else %}
+
+        <h4 class="mt-3 fw-bold">
+          {% if mensaje %} {{ mensaje }} {% else %} Bienvenido al Panel
+          Administrativo {% endif %}
+        </h4>
+
+        {% endif %} {% if not mensaje %}
+        <p class="text-muted">Seleccione una acción para comenzar.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>  
