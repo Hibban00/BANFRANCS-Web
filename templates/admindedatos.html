@@ -16,27 +16,42 @@
         href="/admindedatos?seccion=productos"
         class="list-group-item list-group-item-action"
       >
-        Productos
+        <i class="fas fa-box"></i> Productos
       </a>
 
       <a
         href="/admindedatos?seccion=usuarios"
         class="list-group-item list-group-item-action"
       >
-        Usuarios
+        <i class="fas fa-users"></i> Usuarios
       </a>
 
       <a
         href="/admindedatos?seccion=dashboard"
         class="list-group-item list-group-item-action"
       >
-        Dashboard
+        <i class="fas fa-chart-line"></i> Dashboard
+      </a>
+    </div>
+    <hr class="text-white" />
+    <div class="list-group">
+      <a href="/" class="list-group-item list-group-item-action">
+        <i class="fas fa-home me-2"></i>
+        Volver al Inicio
+      </a>
+
+      <a
+        href="/logout"
+        class="list-group-item list-group-item-action text-danger"
+      >
+        <i class="fas fa-sign-out-alt me-2"></i>
+        Cerrar Sesión
       </a>
     </div>
   </div>
 
   <!-- CONTENIDO -->
-  <div class="col-md-9 col-lg-10 p-4">
+  <div class="col-md-9 col-lg-10 p-4" style="background-color: #f2f3f5">
     {% if seccion == "productos" %}
 
     <h2 class="mb-4">Gestión de Productos</h2>
@@ -53,11 +68,7 @@
       <div class="card-body">{% include "_crud_usuarios.html" %}</div>
     </div>
 
-    {% elif seccion == "dashboard" %}
-
-    {% include "_dashboard.html" %}
-
-    {% else %}
+    {% elif seccion == "dashboard" %} {% include "_dashboard.html" %} {% else %}
 
     <h2>Panel Administrativo BANFRANCS</h2>
 
@@ -69,3 +80,5 @@
     {% endif %}
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -443,7 +443,7 @@ def admindedatos():
 
         # Top 5 productos más caros
         cursor.execute("""
-            SELECT nombre, precio
+            SELECT nombre, precio, codigo
             FROM productos
             ORDER BY precio DESC
             LIMIT 5
@@ -455,7 +455,7 @@ def admindedatos():
         cursor.execute("""
             SELECT COUNT(*)
             FROM productos
-            WHERE precio <= 50
+            WHERE precio <= 35
         """)
 
         rango1 = cursor.fetchone()[0]
@@ -463,8 +463,8 @@ def admindedatos():
         cursor.execute("""
             SELECT COUNT(*)
             FROM productos
-            WHERE precio > 50
-            AND precio <= 100
+            WHERE precio > 35
+            AND precio <= 50
         """)
 
         rango2 = cursor.fetchone()[0]
@@ -472,7 +472,7 @@ def admindedatos():
         cursor.execute("""
             SELECT COUNT(*)
             FROM productos
-            WHERE precio > 100
+            WHERE precio > 50
         """)
 
         rango3 = cursor.fetchone()[0]
@@ -489,17 +489,12 @@ def admindedatos():
 
     productos = cursor.fetchall()
 
-    conexion.close()
-
-    conexion = sqlite3.connect(DB_PATH)
-    cursor = conexion.cursor()
-
     cursor.execute("""
-    SELECT codigo, nombre, precio
-    FROM productos
+    SELECT usuario, rol
+    FROM usuarios
     """)
 
-    productos = cursor.fetchall()
+    usuarios = cursor.fetchall()    
 
     conexion.close()
 
@@ -511,6 +506,7 @@ def admindedatos():
         nombre=nombre,
         precio=precio,
         productos=productos,
+        usuarios=usuarios,
         usuario=usuario,
         password=password,
         total_productos=total_productos,
