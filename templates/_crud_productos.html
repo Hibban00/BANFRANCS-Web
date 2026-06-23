@@ -108,6 +108,9 @@
         {% elif "encontrado" in mensaje %}
         <i class="fas fa-search text-info fa-5x"></i>
 
+        {% elif "orden" in mensaje.lower() %}
+        <i class="fas fa-sort fa-5x text-dark"></i>
+
         {% elif mensaje %}
         <i class="fas fa-exclamation-triangle text-warning fa-5x"></i>
 
@@ -144,6 +147,59 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="mb-3">
+
+    <form method="POST" class="d-flex gap-2 align-items-center">
+
+        <select
+            name="criterio_orden"
+            class="form-select"
+            style="width: 220px;"
+        >
+
+        <option
+            value="default"
+            {% if criterio_orden == "default" %}selected{% endif %}
+        >
+            Por defecto
+        </option>
+
+        <option
+            value="precio_asc"
+            {% if criterio_orden == "precio_asc" %}selected{% endif %}
+        >
+            Precio menor a mayor
+        </option>
+
+        <option
+            value="precio_desc"
+            {% if criterio_orden == "precio_desc" %}selected{% endif %}
+        >
+            Precio mayor a menor
+        </option>
+
+        <option
+            value="nombre_asc"
+            {% if criterio_orden == "nombre_asc" %}selected{% endif %}
+        >
+            Nombre A-Z
+        </option>
+
+        </select>
+
+        <button
+            type="submit"
+            name="accion_producto"
+            value="ordenar"
+            class="btn btn-dark"
+        >
+            Ordenar
+        </button>
+
+    </form>
+
 </div>
 
 <table class="table table-striped">

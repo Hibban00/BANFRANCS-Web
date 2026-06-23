@@ -8,6 +8,55 @@ import sqlite3
 app = Flask(__name__)
 app.secret_key = "banfrancs_secret_key"
 
+def block_quicksort(productos, criterio):
+
+    if len(productos) <= 1:
+        return productos
+
+    if criterio == "precio_asc":
+        clave = lambda x: float(x[2])
+
+    elif criterio == "precio_desc":
+        clave = lambda x: -float(x[2])
+
+    elif criterio == "nombre_asc":
+        clave = lambda x: x[1].lower()
+
+    else:
+        return productos
+
+    pivote = clave(productos[len(productos) // 2])
+
+    menores = []
+    iguales = []
+    mayores = []
+
+    # Procesamiento por bloques
+    tam_bloque = 4
+
+    for i in range(0, len(productos), tam_bloque):
+
+        bloque = productos[i:i + tam_bloque]
+
+        for producto in bloque:
+
+            valor = clave(producto)
+
+            if valor < pivote:
+                menores.append(producto)
+
+            elif valor > pivote:
+                mayores.append(producto)
+
+            else:
+                iguales.append(producto)
+
+    return (
+        block_quicksort(menores, criterio)
+        + iguales
+        + block_quicksort(mayores, criterio)
+    )
+
 
 @app.route("/")
 def inicio():
@@ -52,6 +101,8 @@ def admindedatos():
     rango2 = 0
     rango3 = 0
 
+    criterio_orden = "default"
+
     seccion = request.args.get("seccion")
 
     if request.method == "POST":
@@ -61,9 +112,9 @@ def admindedatos():
 
         if accion_producto:
             print("CRUD PRODUCTOS")
-            codigo = request.form.get("codigo")
-            nombre = request.form.get("nombre")
-            precio = request.form.get("precio")
+            codigo = request.form.get("codigo") or ""
+            nombre = request.form.get("nombre") or ""
+            precio = request.form.get("precio") or ""
 
             print(codigo)
             print(nombre)
@@ -237,6 +288,37 @@ def admindedatos():
                 mensaje = "dashboard"
 
                 conexion.close()
+           
+            elif accion_producto == "ordenar":
+
+                criterio_orden = request.form.get("criterio_orden")
+
+                conexion = sqlite3.connect(DB_PATH)
+                cursor = conexion.cursor()
+
+                cursor.execute("""
+                    SELECT codigo, nombre, precio
+                    FROM productos
+                """)
+
+                productos = cursor.fetchall()
+
+                conexion.close()
+
+                if criterio_orden != "default":
+                    productos = block_quicksort(productos, criterio_orden)
+
+                if criterio_orden == "precio_asc":
+                    mensaje = "Productos ordenados por precio ascendente."
+
+                elif criterio_orden == "precio_desc":
+                    mensaje = "Productos ordenados por precio descendente."
+
+                elif criterio_orden == "nombre_asc":
+                    mensaje = "Productos ordenados por nombre."
+
+                else:
+                    mensaje = "Orden original restaurado."          
 
         if accion_usuario:
 
@@ -487,7 +569,8 @@ def admindedatos():
     FROM productos
     """)
 
-    productos = cursor.fetchall()
+    if not productos:
+        productos = cursor.fetchall()
 
     cursor.execute("""
     SELECT usuario, rol
@@ -502,6 +585,7 @@ def admindedatos():
         "admindedatos.html",
         seccion=seccion,
         mensaje=mensaje,
+        criterio_orden=criterio_orden,
         codigo=codigo,
         nombre=nombre,
         precio=precio,
