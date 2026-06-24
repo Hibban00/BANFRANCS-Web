@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, jsonify
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "banfrancs.db")
@@ -56,6 +56,56 @@ def block_quicksort(productos, criterio):
         + iguales
         + block_quicksort(mayores, criterio)
     )
+
+class NodoPatricia:
+
+    def __init__(self):
+        self.hijos = {}
+        self.palabras = []
+
+
+class PatriciaTrie:
+
+    def __init__(self):
+        self.raiz = NodoPatricia()
+
+    def insertar(self, palabra):
+
+        nodo = self.raiz
+
+        for letra in palabra.lower():
+
+            if letra not in nodo.hijos:
+                nodo.hijos[letra] = NodoPatricia()
+
+            nodo = nodo.hijos[letra]
+
+        nodo.palabras.append(palabra)
+
+    def buscar_prefijo(self, prefijo):
+
+        nodo = self.raiz
+
+        for letra in prefijo.lower():
+
+            if letra not in nodo.hijos:
+                return []
+
+            nodo = nodo.hijos[letra]
+
+        resultados = []
+
+        self._recolectar(nodo, resultados)
+
+        return resultados
+
+    def _recolectar(self, nodo, resultados):
+
+        resultados.extend(nodo.palabras)
+
+        for hijo in nodo.hijos.values():
+            self._recolectar(hijo, resultados)                              
+
 
 
 @app.route("/")
@@ -187,29 +237,88 @@ def admindedatos():
                 conexion = sqlite3.connect(DB_PATH)
                 cursor = conexion.cursor()
 
-                cursor.execute(
-                    """
-                    SELECT nombre, precio
-                    FROM productos
-                    WHERE codigo = ?
-                    """,
-                    (codigo,),
-                )
+                resultado = None
 
-                resultado = cursor.fetchone()
+                tipo_busqueda = ""
 
-                if resultado:
+                # SOLO CÓDIGO
+                if codigo.strip() and not nombre.strip():
 
-                    nombre = resultado[0]
-                    precio = resultado[1]
+                    tipo_busqueda = "codigo"
 
-                    mensaje = "Producto encontrado."
+                    cursor.execute(
+                        """
+                        SELECT nombre, precio
+                        FROM productos
+                        WHERE codigo = ?
+                        """,
+                        (codigo,),
+                    )
+
+                    resultado = cursor.fetchone()
+
+                # SOLO NOMBRE
+                elif nombre.strip() and not codigo.strip():
+
+                    tipo_busqueda = "nombre"
+
+                    cursor.execute(
+                        """
+                        SELECT codigo, precio
+                        FROM productos
+                        WHERE nombre = ?
+                        """,
+                        (nombre,),
+                    )
+
+                    resultado = cursor.fetchone()
+
+                    if resultado:
+                        codigo = resultado[0]
+                        precio = resultado[1]
+
+                # CÓDIGO Y NOMBRE
+                elif codigo.strip() and nombre.strip():
+
+                    tipo_busqueda = "ambos"
+
+                    cursor.execute(
+                        """
+                        SELECT nombre, precio
+                        FROM productos
+                        WHERE codigo = ?
+                        AND nombre = ?
+                        """,
+                        (codigo, nombre),
+                    )
+
+                    resultado = cursor.fetchone()
 
                 else:
 
+                    mensaje = "Ingrese un código o nombre."
+
+                if resultado:
+
+                    # Caso SOLO CÓDIGO
+                    if tipo_busqueda == "codigo":
+
+                        nombre = resultado[0]
+                        precio = resultado[1]
+
+                    # Caso CÓDIGO + NOMBRE
+                    elif tipo_busqueda == "ambos":
+
+                        nombre = resultado[0]
+                        precio = resultado[1]
+
+                    mensaje = "Producto encontrado."
+
+                elif mensaje == "":
                     mensaje = "Producto no encontrado."
 
                 conexion.close()
+
             elif accion_producto == "modificar":
 
                 conexion = sqlite3.connect(DB_PATH)
@@ -318,7 +427,8 @@ def admindedatos():
                     mensaje = "Productos ordenados por nombre."
 
                 else:
-                    mensaje = "Orden original restaurado."          
+                    mensaje = "Orden original restaurado."
+
 
         if accion_usuario:
 
@@ -686,6 +796,34 @@ def registrar():
 
     return redirect("/")
 
+@app.route("/sugerencias_productos")
+def sugerencias_productos():
+
+    texto = request.args.get("texto", "").strip()
+
+    if not texto:
+        return jsonify([])
+
+    conexion = sqlite3.connect(DB_PATH)
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+        SELECT nombre
+        FROM productos
+    """)
+
+    productos = cursor.fetchall()
+
+    conexion.close()
+
+    trie = PatriciaTrie()
+
+    for producto in productos:
+        trie.insertar(producto[0])
+
+    sugerencias = trie.buscar_prefijo(texto)
+
+    return jsonify(sugerencias[:5])
 
 @app.route("/logout")
 def logout():

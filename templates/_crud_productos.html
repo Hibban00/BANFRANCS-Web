@@ -14,14 +14,16 @@
       </div>
 
       <!-- Nombre -->
-      <div class="mb-3">
+      <div class="mb-3 position-relative">
         <label>Nombre</label>
         <input
           type="text"
+          id="nombre"
           name="nombre"
           class="form-control"
           value="{{ nombre }}"
         />
+        <div id="sugerencias"></div>
       </div>
 
       <!-- Precio -->

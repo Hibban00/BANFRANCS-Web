@@ -1,3 +1,117 @@
+<style>
+
+#sugerencias{
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    background: white;
+
+    border: 1px solid #ddd;
+    border-radius: 0 0 10px 10px;
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+
+    z-index: 1000;
+
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.sugerencia-item{
+    padding: 8px;
+    cursor: pointer;
+}
+
+.sugerencia-item:hover{
+    background: #f8f9fa;
+}
+
+</style>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const inputNombre = document.getElementById("nombre");
+    const sugerencias = document.getElementById("sugerencias");
+
+    if (!inputNombre) return;
+
+    inputNombre.addEventListener("input", async () => {
+
+        const inputCodigo =
+            document.querySelector('input[name="codigo"]');
+
+        const inputPrecio =
+            document.querySelector('input[name="precio"]');
+
+        if (inputCodigo) inputCodigo.value = "";
+        if (inputPrecio) inputPrecio.value = "";
+
+        const texto = inputNombre.value.trim();
+
+        if (texto.length === 0){
+
+            sugerencias.innerHTML = "";
+            return;
+        }
+
+        const respuesta = await fetch(
+            `/sugerencias_productos?texto=${texto}`
+        );
+
+        const datos = await respuesta.json();
+
+        sugerencias.innerHTML = "";
+
+        datos.forEach(nombre => {
+
+            const item = document.createElement("div");
+
+            item.className = "sugerencia-item";
+            item.textContent = nombre;
+
+            item.onclick = () => {
+
+                inputNombre.value = nombre;
+
+                const inputCodigo =
+                    document.querySelector('input[name="codigo"]');
+
+                const inputPrecio =
+                    document.querySelector('input[name="precio"]');
+
+                if (inputCodigo) inputCodigo.value = "";
+                if (inputPrecio) inputPrecio.value = "";
+
+                sugerencias.innerHTML = "";
+
+            };
+
+            sugerencias.appendChild(item);
+
+        });
+
+    });
+
+    document.addEventListener("click", (e) => {
+
+    if (
+        e.target !== inputNombre &&
+        !sugerencias.contains(e.target)
+    ) {
+
+        sugerencias.innerHTML = "";
+
+    }
+
+  });
+});
+
+</script>
+
 <link
   href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
   rel="stylesheet"
